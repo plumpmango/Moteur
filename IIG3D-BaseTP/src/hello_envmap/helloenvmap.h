@@ -1,5 +1,5 @@
-#ifndef SIMPLESHADOWMAP_H
-#define SIMPLESHADOWMAP_H
+#ifndef SIMPLEENVMAP_H
+#define SIMPLEENVMAP_H
 
 #include "opengldemo.h"
 
@@ -8,11 +8,12 @@
 #include <memory>
 #include <functional>
 
-class SimpleShadowMap : public OpenGLDemo {
+class SimpleEnvMap : public OpenGLDemo {
 public:
-    explicit SimpleShadowMap(int width, int height);
-    ~SimpleShadowMap() override;
+    explicit SimpleEnvMap(int width, int height);
+    ~SimpleEnvMap() override;
 
+    unsigned int loadCubemap(std::vector<std::string> faces);
     void resize(int width, int height) override;
     void draw() override;
 
@@ -21,8 +22,13 @@ public:
     void keyboardmove(int key, double time) override;
     bool keyboard(unsigned char k) override;
 private:
+
+    //texture
+    unsigned int textureId;
+    unsigned int cubemapTexture;
+
     // A simple geometry
-    std::vector<glm::vec3> _vertices;
+    std::vector<float> _vertices;
     std::vector<GLfloat> _normals;
     std::vector<GLuint> _indices;
 
@@ -33,10 +39,10 @@ private:
     // OpenGL object for geometry
     // Vertex Array Buffer
     GLuint _vao;
-    GLuint _vao2;
+
     // Vertex Buffer Object
     GLuint _vbo;
-    GLuint _vbo2;
+
     // Normal buffer
     GLuint _nbo;
     // Face buffer
@@ -71,4 +77,4 @@ private:
     glm::mat4 _projection;
 };
 
-#endif // SIMPLESHADOWMAP_H
+#endif // SIMPLEENVMAP_H

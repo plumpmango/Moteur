@@ -27,7 +27,7 @@ private slots:
 
     void on_actionHello_nurbs_triggered();
 
-        void on_actionHello_shadowmap_triggered();
+        void on_actionHello_envmap_triggered();
 
     void on_actionHello_clear_triggered();
 

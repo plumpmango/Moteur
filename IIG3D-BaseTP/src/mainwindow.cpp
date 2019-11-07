@@ -60,6 +60,6 @@ void MainWindow::on_actionHello_nurbs_triggered() {
     openglWidget->activatedemo(4);
 }
 
-void MainWindow::on_actionHello_shadowmap_triggered() {
+void MainWindow::on_actionHello_envmap_triggered() {
     openglWidget->activatedemo(5);
 }

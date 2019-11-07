@@ -1,61 +1,87 @@
-#include "helloshadowmap.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+#include "helloenvmap.h"
 #include <iostream>
 #include <cmath>
 
 static const char* vertexshader_source ="#version 410 core\n\
         layout (location = 0) in vec3 position;\n\
-        layout (location = 1) in vec3 inormal;\n\
-        uniform mat4 model;\n\
         uniform mat4 view;\n\
         uniform mat4 projection;\n\
-        out vec3 normal;\n\
+        out vec3 TexCoords;\n\
         void main()\n\
         {\n\
             // Note that we read the multiplication from right to left\n\
-            gl_Position = projection * view * model * vec4(position, 1.0f);\n\
-            normal = inormal;\n\
+            gl_Position = projection * view * vec4(position, 1.0f);\n\
+            TexCoords = position;\n\
         }\n";
 
 static const char* fragmentshader_source ="#version 410 core\n\
-        in vec3 normal;\n\
-        out vec4 color;\n\
+        out vec4 FragColor;\n\
+        in vec3 TexCoords;\n\
+        uniform samplerCube skybox;\n\
         void main()\n\
         {\n\
-            color = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n\
+            FragColor = texture(skybox,TexCoords);\n\
         }\n";
 
-static const char* fragmentshadernormal_source ="#version 410 core\n\
-        in vec3 normal;\n\
-        out vec4 color;\n\
-        void main()\n\
-        {\n\
-            color = vec4(normal*0.5+0.5, 1.0f);\n\
-        }\n";
-
-SimpleShadowMap::SimpleShadowMap(int width, int height) : OpenGLDemo(width, height), _activecamera(0), _camera(nullptr) {
-      // std::vector<glm::vec3> _ptsControle;
-      std::vector<glm::vec3> _ptsControle {
-          // glm::vec3(-0.2,-0.2,0), glm::vec3(0,0,0), glm::vec3(0.2,0.2,0),
-          // glm::vec3(-0.2,0.2,0), glm::vec3(0,0,0), glm::vec3(0.2,-0.2,0),
-          // glm::vec3(-0.2,-0.2,0), glm::vec3(0,0,0)
-          glm::vec3(-0.2,-0.2,0.1), glm::vec3(0,0,0), glm::vec3(0.2,0.2,-0.1),
-          glm::vec3(-0.2,0.2,0.05), glm::vec3(0,0,0), glm::vec3(0.2,-0.2,0.05),
-          glm::vec3(-0.2,-0.2,0.1), glm::vec3(0,0,0), glm::vec3(0.2,0.2,-0.1),
-          glm::vec3(0.2,-0.2,0.05),  glm::vec3(0,0,0), glm::vec3(-0.2,0.2,0.05),
-          glm::vec3(-0.2,-0.2,0.1), glm::vec3(0,0,0), glm::vec3(0.2,0.2,-0.1),
-          glm::vec3(-0.2,0.2,0.05), glm::vec3(0,0,0), glm::vec3(0.2,-0.2,0.05),
-          glm::vec3(0.3,-0.4,0), glm::vec3(0.1,-0.55,0) ,glm::vec3(0.35,-0.6,0),
-           glm::vec3(0.7,-0.35,0), glm::vec3(0.3,-0.4,0), glm::vec3(0.1,-0.55,0),
-           glm::vec3(0.35,-0.6,0),glm::vec3(0.7,-0.35,0), glm::vec3(0.3,-0.4,0),
-           glm::vec3(0.1,-0.55,0)
-      };
-
-      for (unsigned int i = 0; i < _ptsControle.size(); i++)
-          _indices2.push_back(i);
-      afficherPtsControle = 0;
 
 
-      _vertices = _ptsControle;
+SimpleEnvMap::SimpleEnvMap(int width, int height) : OpenGLDemo(width, height), _activecamera(0), _camera(nullptr) {
+
+  std::vector<std::string> faces = {
+    "../src/hello_envmap/skybox/right.jpg",
+    "../src/hello_envmap/skybox/left.jpg",
+    "../src/hello_envmap/skybox/top.jpg",
+    "../src/hello_envmap/skybox/bottom.jpg",
+    "../src/hello_envmap/skybox/front.jpg",
+    "../src/hello_envmap/skybox/back.jpg"
+  };
+  cubemapTexture = loadCubemap(faces);
+
+  _vertices = {
+-1.0f,  1.0f, -1.0f,
+-1.0f, -1.0f, -1.0f,
+ 1.0f, -1.0f, -1.0f,
+ 1.0f, -1.0f, -1.0f,
+ 1.0f,  1.0f, -1.0f,
+-1.0f,  1.0f, -1.0f,
+
+-1.0f, -1.0f,  1.0f,
+-1.0f, -1.0f, -1.0f,
+-1.0f,  1.0f, -1.0f,
+-1.0f,  1.0f, -1.0f,
+-1.0f,  1.0f,  1.0f,
+-1.0f, -1.0f,  1.0f,
+
+ 1.0f, -1.0f, -1.0f,
+ 1.0f, -1.0f,  1.0f,
+ 1.0f,  1.0f,  1.0f,
+ 1.0f,  1.0f,  1.0f,
+ 1.0f,  1.0f, -1.0f,
+ 1.0f, -1.0f, -1.0f,
+
+-1.0f, -1.0f,  1.0f,
+-1.0f,  1.0f,  1.0f,
+ 1.0f,  1.0f,  1.0f,
+ 1.0f,  1.0f,  1.0f,
+ 1.0f, -1.0f,  1.0f,
+-1.0f, -1.0f,  1.0f,
+
+-1.0f,  1.0f, -1.0f,
+ 1.0f,  1.0f, -1.0f,
+ 1.0f,  1.0f,  1.0f,
+ 1.0f,  1.0f,  1.0f,
+-1.0f,  1.0f,  1.0f,
+-1.0f,  1.0f, -1.0f,
+
+-1.0f, -1.0f, -1.0f,
+-1.0f, -1.0f,  1.0f,
+ 1.0f, -1.0f, -1.0f,
+ 1.0f, -1.0f, -1.0f,
+-1.0f, -1.0f,  1.0f,
+ 1.0f, -1.0f,  1.0f
+  };
 
       _indices.push_back(0);
       for (unsigned int i = 1; i < _vertices.size() - 1; i++)
@@ -65,10 +91,12 @@ SimpleShadowMap::SimpleShadowMap(int width, int height) : OpenGLDemo(width, heig
       }
       _indices.push_back(_vertices.size() - 1);
 
+      //Initialize textures
+      textureId = loadCubemap(faces);
+
       // Initialize the geometry
       // 1. Generate geometry buffers
       glGenBuffers(1, &_vbo) ;
-      glGenBuffers(1, &_nbo) ;
       glGenBuffers(1, &_ebo) ;
       glGenVertexArrays(1, &_vao) ;
       // 2. Bind Vertex Array Object
@@ -79,33 +107,12 @@ SimpleShadowMap::SimpleShadowMap(int width, int height) : OpenGLDemo(width, heig
           // 4. Then set our vertex attributes pointers
           glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
           glEnableVertexAttribArray(0);
-          // 5. Copy our normals array in a buffer for OpenGL to use
-          glBindBuffer(GL_ARRAY_BUFFER, _nbo);
-          glBufferData(GL_ARRAY_BUFFER, _normals.size()*sizeof (GLfloat), _normals.data(), GL_STATIC_DRAW);
-          // 6. Copy our vertices array in a buffer for OpenGL to use
+                  // 6. Copy our vertices array in a buffer for OpenGL to use
           glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
           glEnableVertexAttribArray(1);
           // 7. Copy our index array in a element buffer for OpenGL to use
           glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
           glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size()*sizeof (GLfloat), _indices.data(), GL_STATIC_DRAW);
-      //6. Unbind the VAO
-      glBindVertexArray(0);
-
-      // 1. Generate geometry buffers
-      glGenBuffers(1, &_vbo2) ;
-      glGenBuffers(1, &_ebo2) ;
-      glGenVertexArrays(1, &_vao2) ;
-      // 2. Bind Vertex Array Object
-      glBindVertexArray(_vao2);
-          // 3. Copy our vertices array in a buffer for OpenGL to use
-          glBindBuffer(GL_ARRAY_BUFFER, _vbo2);
-          glBufferData(GL_ARRAY_BUFFER, _ptsControle.size()*sizeof (glm::vec3), _ptsControle.data(), GL_STATIC_DRAW);
-          // 4. Then set our vertex attributes pointers
-          glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-          glEnableVertexAttribArray(0);
-          // 7. Copy our index array in a element buffer for OpenGL to use
-          glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo2);
-          glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices2.size()*sizeof (GLfloat), _indices2.data(), GL_STATIC_DRAW);
       //6. Unbind the VAO
       glBindVertexArray(0);
 
@@ -153,7 +160,7 @@ SimpleShadowMap::SimpleShadowMap(int width, int height) : OpenGLDemo(width, heig
       glDeleteShader(fragmentshader);
 
       fragmentshader = glCreateShader(GL_FRAGMENT_SHADER);
-      glShaderSource(fragmentshader, 1, &fragmentshadernormal_source, NULL);
+      glShaderSource(fragmentshader, 1, &fragmentshader_source, NULL);
       glCompileShader(fragmentshader);
       glGetShaderiv(fragmentshader, GL_COMPILE_STATUS, &success);
       if(!success) {
@@ -189,53 +196,77 @@ SimpleShadowMap::SimpleShadowMap(int width, int height) : OpenGLDemo(width, heig
       _projection = glm::perspective(_camera->zoom(), float(_width) / _height, 0.1f, 100.0f);
   }
 
-  SimpleShadowMap::~SimpleShadowMap() {
+  SimpleEnvMap::~SimpleEnvMap() {
       glDeleteProgram(_programcolor);
       glDeleteProgram(_programnormal);
       glDeleteBuffers(1, &_vbo);
-      glDeleteBuffers(1, &_nbo);
       glDeleteBuffers(1, &_ebo);
       glDeleteVertexArrays(1, &_vao) ;
-      glDeleteBuffers(1, &_vbo2);
-      glDeleteBuffers(1, &_ebo2);
-      glDeleteVertexArrays(1, &_vao2) ;
+
   }
 
-  void SimpleShadowMap::resize(int width, int height){
+  unsigned int SimpleEnvMap::loadCubemap(std::vector<std::string> faces)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+    int width, height, nrChannels;
+    for (unsigned int i = 0; i < faces.size(); i++)
+    {
+        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+            );
+            stbi_image_free(data);
+        }
+        else
+        {
+            std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+            stbi_image_free(data);
+        }
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
+}
+
+  void SimpleEnvMap::resize(int width, int height){
       OpenGLDemo::resize(width, height);
       _camera->setviewport(glm::vec4(0.f, 0.f, _width, _height));
       _projection = glm::perspective(_camera->zoom(), float(_width) / _height, 0.1f, 100.0f);
   }
 
-  void SimpleShadowMap::draw() {
+  void SimpleEnvMap::draw() {
       OpenGLDemo::draw();
 
       glUseProgram(_program);
 
       _view = _camera->viewmatrix();
 
-      glUniformMatrix4fv( glGetUniformLocation(_program, "model"), 1, GL_FALSE, glm::value_ptr(_model));
-      glUniformMatrix4fv( glGetUniformLocation(_program, "view"), 1, GL_FALSE, glm::value_ptr(_view));
-      glUniformMatrix4fv( glGetUniformLocation(_program, "projection"), 1, GL_FALSE, glm::value_ptr(_projection));
-
       if(!destroy){
+        glDepthMask(GL_FALSE);
         glBindVertexArray(_vao);
-        glDrawElements(GL_LINES, _indices.size(), GL_UNSIGNED_INT, 0);
+        glm::mat4 view = glm::mat4(glm::mat3(_view));
+        glUniformMatrix4fv( glGetUniformLocation(_program, "view"), 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv( glGetUniformLocation(_program, "projection"), 1, GL_FALSE, glm::value_ptr(_projection));
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDepthMask(GL_TRUE);
         glBindVertexArray(0);
 
       }
 
-      if (afficherPtsControle)
-      {
-          glBindVertexArray(_vao2);
-          glEnable(GL_PROGRAM_POINT_SIZE);
-          glPointSize(10);
-          glDrawElements(GL_POINTS, _indices2.size(), GL_UNSIGNED_INT, 0);
-      }
-      glBindVertexArray(0);
+
   }
 
-  void SimpleShadowMap::mouseclick(int button, float xpos, float ypos) {
+  void SimpleEnvMap::mouseclick(int button, float xpos, float ypos) {
       _button = button;
       switch (_button) {
         case 0: //left
@@ -254,15 +285,15 @@ SimpleShadowMap::SimpleShadowMap(int width, int height) : OpenGLDemo(width, heig
       }
   }
 
-  void SimpleShadowMap::mousemove(float xpos, float ypos) {
+  void SimpleEnvMap::mousemove(float xpos, float ypos) {
       _camera->processmousemovement(_button, xpos, ypos, true);
   }
 
-  void SimpleShadowMap::keyboardmove(int key, double time) {
+  void SimpleEnvMap::keyboardmove(int key, double time) {
       _camera->processkeyboard(Camera_Movement(key), time);
   }
 
-  bool SimpleShadowMap::keyboard(unsigned char k) {
+  bool SimpleEnvMap::keyboard(unsigned char k) {
       switch(k) {
           case 'a' :
               afficherPtsControle++;
@@ -284,10 +315,7 @@ SimpleShadowMap::SimpleShadowMap(int width, int height) : OpenGLDemo(width, heig
             glGenBuffers(1, &_nbo) ;
             glGenBuffers(1, &_ebo) ;
             glGenVertexArrays(1, &_vao) ;
-            // 1. Generate geometry buffers
-            glGenBuffers(1, &_vbo2) ;
-            glGenBuffers(1, &_ebo2) ;
-            glGenVertexArrays(1, &_vao2) ;
+
 
             return true;
           case 's':
@@ -295,10 +323,6 @@ SimpleShadowMap::SimpleShadowMap(int width, int height) : OpenGLDemo(width, heig
             glDeleteBuffers(1, &_nbo);
             glDeleteBuffers(1, &_ebo);
             glDeleteVertexArrays(1, &_vao) ;
-            glDeleteBuffers(1, &_vbo2);
-            glDeleteBuffers(1, &_ebo2);
-            glDeleteVertexArrays(1, &_vao2) ;
-            _ptsControle.clear();
             destroy = true;
             return true;
           default:

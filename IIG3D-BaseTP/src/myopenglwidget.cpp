@@ -11,7 +11,7 @@
 #include "hello_camera/hellocamera.h"
 #include "hello_bspline/hellobspline.h"
 #include "hello_nurbs/hellonurbs.h"
-#include "hello_shadowmap/helloshadowmap.h"
+#include "hello_envmap/helloenvmap.h"
 
 MyOpenGLWidget::MyOpenGLWidget(QWidget *parent) :QOpenGLWidget(parent)/*, QOpenGLFunctions_4_1_Core()*/, _openglDemo(nullptr), _lastime(0) {
     // add all demo constructors here
@@ -31,7 +31,7 @@ MyOpenGLWidget::MyOpenGLWidget(QWidget *parent) :QOpenGLWidget(parent)/*, QOpenG
         std::cout << "Hello nurbs ..." << std::endl; return new SimpleNurbs(width, height);
         } );
     _democonstructors.push_back( [](int width, int height)->OpenGLDemo*{
-            std::cout << "Hello shadow map ..." << std::endl; return new SimpleShadowMap(width, height);
+            std::cout << "Hello env map ..." << std::endl; return new SimpleEnvMap(width, height);
             } );
 }
 

@@ -43,7 +43,7 @@
     <addaction name="actionHello_camera"/>
     <addaction name="actionHello_bspline"/>
     <addaction name="actionHello_nurbs"/>
-    <addaction name="actionHello_shadowmap"/>
+    <addaction name="actionHello_envmap"/>
    </widget>
    <addaction name="menu_Demo"/>
    <addaction name="menuInfo"/>
@@ -82,7 +82,7 @@
     <string>Hello nurbs ...</string>
    </property>
   </action>
-  <action name="actionHello_shadowmap">
+  <action name="actionHello_envmap">
    <property name="text">
     <string>Hello shadowmap ...</string>
    </property>
