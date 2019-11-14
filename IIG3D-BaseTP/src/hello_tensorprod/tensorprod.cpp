@@ -31,7 +31,7 @@ std::vector<glm::vec3> TensorProd::construireGeneratrice(int n){
       std::vector<float> pds;
       for (int v = 0; v < n; v++){
         tmp.push_back(vec_directrices[v][u]);
-        pds.push_back(w[u*n+v]);
+        pds.push_back(1);
       }
 
       Nurbs gen(tmp,pds, getOrdre());

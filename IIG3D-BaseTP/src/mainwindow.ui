@@ -84,7 +84,7 @@
   </action>
   <action name="actionHello_envmap">
    <property name="text">
-    <string>Hello shadowmap ...</string>
+    <string>Hello cubemap ...</string>
    </property>
   </action>
   <action name="actionHello_clear">

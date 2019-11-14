@@ -36,17 +36,21 @@ static const char* fragmentshadernormal_source ="#version 410 core\n\
 SimpleNurbs::SimpleNurbs(int width, int height) : OpenGLDemo(width, height), _activecamera(0), _camera(nullptr)  {
 
     // std::vector<glm::vec3> _ptsControle;
-    std::vector<glm::vec3> _ptsControle {
+    std::vector<glm::vec3> ptsControle {
         glm::vec3(-0.4,0.1,0),glm::vec3(-0.2,-0.2,0), glm::vec3(0,0,0),
         glm::vec3(0.2,-0.2,0),glm::vec3(0.4,-0.1,0), glm::vec3(0.6,0.2,0)
     };
 
-    std::vector<float> _w {
-        1, 1, 4.1,
+    _ptsControle = ptsControle;
+
+    std::vector<float> w {
+        1, 1, 1,
         1, 1, 1
     };
 
-      int k = 3;
+    _w = w;
+
+    int k = 3;
 
     for (unsigned int i = 0; i < _ptsControle.size(); i++)
         _indices2.push_back(i);
@@ -57,7 +61,11 @@ SimpleNurbs::SimpleNurbs(int width, int height) : OpenGLDemo(width, height), _ac
     Nurbs nurbs(_ptsControle, _w, k);
 
     _vertices = nurbs.getVertices();
-
+    std::cout << "v1" << std::endl;
+    for(unsigned int i = 0; i < _vertices.size(); i++){
+      std::cout << _vertices[i][0] << " , " << _vertices[i][1] << " , " << _vertices[i][2] << " ; ";
+    }
+    std::cout << std::endl;
 
     _indices.push_back(0);
     for (unsigned int i = 1; i < _vertices.size() - 1; i++)
@@ -203,6 +211,103 @@ SimpleNurbs::~SimpleNurbs() {
     glDeleteVertexArrays(1, &_vao2) ;
 }
 
+void SimpleNurbs::clearGeom(){
+  _indices2.clear();
+  _vertices.clear();
+  _indices.clear();
+  glDeleteBuffers(1, &_vbo);
+  glDeleteBuffers(1, &_nbo);
+  glDeleteBuffers(1, &_ebo);
+  glDeleteVertexArrays(1, &_vao) ;
+  glDeleteBuffers(1, &_vbo2);
+  glDeleteBuffers(1, &_ebo2);
+  glDeleteVertexArrays(1, &_vao2) ;
+}
+
+void SimpleNurbs::computeGeom(){
+  //Vider les tableaux
+  // std::cout << "recalcule geom " << std::endl;
+
+    //clear geometry
+    clearGeom();
+
+  int k = 3;
+  for (unsigned int i = 0; i < _ptsControle.size(); i++)
+      _indices2.push_back(i);
+  afficherPtsControle = 0;
+
+   std::cout << _w[2] << std::endl;
+  Nurbs nurbs(_ptsControle, _w, k);
+
+  // std::cout << "taille av clear : " << _vertices.size() << std::endl;
+
+  _vertices = nurbs.getVertices();
+
+std::cout << "v2" << std::endl;
+for(unsigned int i = 0; i < _vertices.size(); i++){
+  std::cout << _vertices[i][0] << " , " << _vertices[i][1] << " , " << _vertices[i][2] << " ; ";
+}
+std::cout << std::endl;
+
+// std::cout << "taille vertices : " << _vertices.size() << std::endl;
+
+  _indices.push_back(0);
+  for (unsigned int i = 1; i < _vertices.size() - 1; i++)
+  {
+      _indices.push_back(i);
+      _indices.push_back(i);
+  }
+  _indices.push_back(_vertices.size() - 1);
+
+
+  // Initialize the geometry
+  // 1. Generate geometry buffers
+  glGenBuffers(1, &_vbo) ;
+  glGenBuffers(1, &_nbo) ;
+  glGenBuffers(1, &_ebo) ;
+  glGenVertexArrays(1, &_vao) ;
+  // 2. Bind Vertex Array Object
+  glBindVertexArray(_vao);
+      // 3. Copy our vertices array in a buffer for OpenGL to use
+      glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+      glBufferData(GL_ARRAY_BUFFER, _vertices.size()*sizeof (glm::vec3), _vertices.data(), GL_STATIC_DRAW);
+      // 4. Then set our vertex attributes pointers
+      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+      glEnableVertexAttribArray(0);
+      // 5. Copy our normals array in a buffer for OpenGL to use
+      glBindBuffer(GL_ARRAY_BUFFER, _nbo);
+      glBufferData(GL_ARRAY_BUFFER, _normals.size()*sizeof (GLfloat), _normals.data(), GL_STATIC_DRAW);
+      // 6. Copy our vertices array in a buffer for OpenGL to use
+      glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+      glEnableVertexAttribArray(1);
+      // 7. Copy our index array in a element buffer for OpenGL to use
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size()*sizeof (GLfloat), _indices.data(), GL_STATIC_DRAW);
+  //6. Unbind the VAO
+  glBindVertexArray(0);
+
+  // 1. Generate geometry buffers
+  glGenBuffers(1, &_vbo2) ;
+  glGenBuffers(1, &_ebo2) ;
+  glGenVertexArrays(1, &_vao2) ;
+  // 2. Bind Vertex Array Object
+  glBindVertexArray(_vao2);
+      // 3. Copy our vertices array in a buffer for OpenGL to use
+      glBindBuffer(GL_ARRAY_BUFFER, _vbo2);
+      glBufferData(GL_ARRAY_BUFFER, _ptsControle.size()*sizeof (glm::vec3), _ptsControle.data(), GL_STATIC_DRAW);
+      // 4. Then set our vertex attributes pointers
+      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+      glEnableVertexAttribArray(0);
+      // 7. Copy our index array in a element buffer for OpenGL to use
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo2);
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices2.size()*sizeof (GLfloat), _indices2.data(), GL_STATIC_DRAW);
+  //6. Unbind the VAO
+  glBindVertexArray(0);
+
+  glCheckError();
+
+}
+
 void SimpleNurbs::resize(int width, int height){
     OpenGLDemo::resize(width, height);
     _camera->setviewport(glm::vec4(0.f, 0.f, _width, _height));
@@ -211,7 +316,7 @@ void SimpleNurbs::resize(int width, int height){
 
 void SimpleNurbs::draw() {
     OpenGLDemo::draw();
-
+    // std::cout << "test" <<std::endl;
     glUseProgram(_program);
 
     _view = _camera->viewmatrix();
@@ -297,6 +402,15 @@ bool SimpleNurbs::keyboard(unsigned char k) {
           _ptsControle.clear();
           destroy = true;
           return true;
+        case 't':
+          _w[2] += 100;
+          // std::cout << _w[2] << std::endl;
+          computeGeom();
+          return true;
+        // case 'b' :
+        //   if(_w[2] > 0)
+        //     _w[2] --;
+        //   return true;
         default:
             return false;
     }

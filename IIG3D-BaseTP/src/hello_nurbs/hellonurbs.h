@@ -12,10 +12,10 @@ class SimpleNurbs : public OpenGLDemo {
 public:
     explicit SimpleNurbs(int width, int height);
     ~SimpleNurbs() override;
-
+    void clearGeom();
     void resize(int width, int height) override;
     void draw() override;
-
+    void computeGeom();
     void mouseclick(int button, float xpos, float ypos) override;
     void mousemove(float xpos, float ypos) override;
     void keyboardmove(int key, double time) override;
@@ -29,6 +29,7 @@ private:
     std::vector<glm::vec3> _ptsControle;
     std::vector<GLuint> _indices2;
     int afficherPtsControle;
+    std::vector<float> _w;
 
     // OpenGL object for geometry
     // Vertex Array Buffer

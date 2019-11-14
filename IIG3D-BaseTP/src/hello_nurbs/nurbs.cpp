@@ -34,19 +34,25 @@ glm::vec3 Nurbs::floraison(float t)
     }
 
     std::vector<glm::vec3> pt = getPc();
+    std::vector<float> w = getW();
 
     std::vector<glm::vec3> ptI;
+    std::vector<float> wI;
+
     for(int i = 0; i < getOrdre(); i++){
       glm::vec3 p;
       p.x = pt[i+dec].x;
       p.y = pt[i+dec].y;
       p.z = pt[i+dec].z;
+      wI.push_back(w[i+dec]);
       ptI.push_back(p);
     }
 
 
+
       //algorithme de Floraison
-    std::vector<float> w = getW();
+
+
     int k = getOrdre();
     int l = k;
 
@@ -55,11 +61,13 @@ glm::vec3 Nurbs::floraison(float t)
 //         std::cout << "ptI(" << i << ") = (" << ptI.at(i).x << "," << ptI.at(i).y << "," << ptI.at(i).z << ") ; pt(" << i+1 << ") = (" << ptI.at(i+1).x << "," << ptI.at(i+1).y << "," << pt.at(i+1).z << ")" << std::endl;
         float ni =(vNodal[dec+l+i]-t) / (vNodal[dec+l+i]-vNodal[dec+1+i]);
         float nip1 = (t-vNodal[dec+1+i]) / (vNodal[dec+l+i]-vNodal[dec+1+i]);
-        float norm = ni*w[dec+i] + nip1*w[dec+i+1];
 
-        ptI[i].x = (ni*ptI[i].x*w[dec+i] + nip1*ptI[i+1].x*w[dec+i+1]) / norm;
-        ptI[i].y = (ni*ptI[i].y*w[dec+i] + nip1*ptI[i+1].y*w[dec+i+1]) / norm;
-        ptI[i].z = (ni*ptI[i].z*w[dec+i] + nip1*ptI[i+1].z*w[dec+i+1]) / norm;
+
+        ptI[i].x = (ni*ptI[i].x*wI[i] + nip1*ptI[i+1].x*wI[i+1]) ;
+        ptI[i].y = (ni*ptI[i].y*wI[i] + nip1*ptI[i+1].y*wI[i+1]) ;
+        ptI[i].z = (ni*ptI[i].z*wI[i] + nip1*ptI[i+1].z*wI[i+1]) ;
+
+        wI[i] = ni*wI[i] + nip1*wI[i+1];
         // std::cout << pt[i].x << "  "  << pt[i].y << "  " << pt[i].z << std::endl;
       }
       l--;
@@ -67,7 +75,7 @@ glm::vec3 Nurbs::floraison(float t)
       // std::cout << "dec = " << dec << " l = " << l;
     }
 
-    return ptI[0];
+    return ptI[0]/wI[0];
 }
 
 
