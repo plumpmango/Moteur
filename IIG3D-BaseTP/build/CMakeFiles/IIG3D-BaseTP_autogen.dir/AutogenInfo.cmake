@@ -1,0 +1,34 @@
+# Meta
+set(AM_MULTI_CONFIG "FALSE")
+set(AM_PARALLEL "4")
+# Directories
+set(AM_CMAKE_SOURCE_DIR "/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP")
+set(AM_CMAKE_BINARY_DIR "/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/build")
+set(AM_CMAKE_CURRENT_SOURCE_DIR "/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP")
+set(AM_CMAKE_CURRENT_BINARY_DIR "/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/build")
+set(AM_CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE "")
+set(AM_BUILD_DIR "/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/build/IIG3D-BaseTP_autogen")
+set(AM_INCLUDE_DIR "include")
+# Files
+set(AM_SOURCES "/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_bspline/bspline.cpp;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_bspline/hellobspline.cpp;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_camera/camera.cpp;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_camera/hellocamera.cpp;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_envmap/helloenvmap.cpp;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_nurbs/hellonurbs.cpp;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_nurbs/nurbs.cpp;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_subdivision/hellosubdivision.cpp;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_tensorprod/hellotensorprod.cpp;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_tensorprod/tensorprod.cpp;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/main.cpp;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/mainwindow.cpp;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/myopenglwidget.cpp;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/opengldemo.cpp")
+set(AM_HEADERS "/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_bspline/bspline.h;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_bspline/hellobspline.h;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_camera/camera.h;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_camera/hellocamera.h;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_envmap/helloenvmap.h;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_envmap/stb_image.h;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_nurbs/hellonurbs.h;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_nurbs/nurbs.h;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_subdivision/hellosubdivision.h;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_tensorprod/hellotensorprod.h;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/hello_tensorprod/tensorprod.h;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/mainwindow.h;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/myopenglwidget.h;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/opengl_stuff.h;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src/opengldemo.h")
+set(AM_SETTINGS_FILE "/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/build/CMakeFiles/IIG3D-BaseTP_autogen.dir/AutogenOldSettings.txt")
+# Qt
+set(AM_QT_VERSION_MAJOR "5")
+set(AM_QT_MOC_EXECUTABLE "/opt/anaconda5/bin/moc")
+set(AM_QT_UIC_EXECUTABLE "/opt/anaconda5/bin/uic")
+# MOC settings
+set(AM_MOC_SKIP "/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/build/IIG3D-BaseTP_autogen/mocs_compilation.cpp")
+set(AM_MOC_DEFINITIONS "GL_SILENCE_DEPRECATION;QT_CORE_LIB;QT_GUI_LIB;QT_NO_DEBUG;QT_OPENGL_LIB;QT_WIDGETS_LIB")
+set(AM_MOC_INCLUDES "/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/build;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/build/IIG3D-BaseTP_autogen/include;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/src;/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/glm;/opt/anaconda5/include/qt;/opt/anaconda5/include/qt/QtOpenGL;/opt/anaconda5/include/qt/QtWidgets;/opt/anaconda5/include/qt/QtGui;/opt/anaconda5/include/qt/QtCore;/opt/anaconda5/./mkspecs/linux-g++")
+set(AM_MOC_OPTIONS "")
+set(AM_MOC_RELAXED_MODE "")
+set(AM_MOC_MACRO_NAMES "Q_OBJECT;Q_GADGET;Q_NAMESPACE")
+set(AM_MOC_DEPEND_FILTERS "")
+set(AM_MOC_PREDEFS_CMD "")
+# UIC settings
+set(AM_UIC_SKIP "/home/crc1146a/Bureau/Moteur/Moteur/IIG3D-BaseTP/build/IIG3D-BaseTP_autogen/mocs_compilation.cpp")
+set(AM_UIC_TARGET_OPTIONS "")
+set(AM_UIC_OPTIONS_FILES "")
+set(AM_UIC_OPTIONS_OPTIONS "")
+set(AM_UIC_SEARCH_PATHS "")

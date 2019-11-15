@@ -12,6 +12,7 @@
 #include "hello_bspline/hellobspline.h"
 #include "hello_nurbs/hellonurbs.h"
 #include "hello_envmap/helloenvmap.h"
+#include "hello_subdivision/hellosubdivision.h"
 
 MyOpenGLWidget::MyOpenGLWidget(QWidget *parent) :QOpenGLWidget(parent)/*, QOpenGLFunctions_4_1_Core()*/, _openglDemo(nullptr), _lastime(0) {
     // add all demo constructors here
@@ -32,6 +33,9 @@ MyOpenGLWidget::MyOpenGLWidget(QWidget *parent) :QOpenGLWidget(parent)/*, QOpenG
         } );
     _democonstructors.push_back( [](int width, int height)->OpenGLDemo*{
             std::cout << "Hello env map ..." << std::endl; return new SimpleEnvMap(width, height);
+            } );
+    _democonstructors.push_back( [](int width, int height)->OpenGLDemo*{
+            std::cout << "Hello subdivision ..." << std::endl; return new Subdivision(width, height);
             } );
 }
 

@@ -63,3 +63,7 @@ void MainWindow::on_actionHello_nurbs_triggered() {
 void MainWindow::on_actionHello_envmap_triggered() {
     openglWidget->activatedemo(5);
 }
+
+void MainWindow::on_actionHello_subdivision_triggered() {
+    openglWidget->activatedemo(5);
+}

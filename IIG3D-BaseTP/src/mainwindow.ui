@@ -44,6 +44,7 @@
     <addaction name="actionHello_bspline"/>
     <addaction name="actionHello_nurbs"/>
     <addaction name="actionHello_envmap"/>
+    <addaction name="actionHello_subdivision"/>
    </widget>
    <addaction name="menu_Demo"/>
    <addaction name="menuInfo"/>
@@ -85,6 +86,11 @@
   <action name="actionHello_envmap">
    <property name="text">
     <string>Hello cubemap ...</string>
+   </property>
+  </action>
+  <action name="actionHello_subdivision">
+   <property name="text">
+    <string>Hello subdivision ...</string>
    </property>
   </action>
   <action name="actionHello_clear">
