@@ -1,6 +1,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "helloenvmap.h"
+#include "../hello_meshes/meshes.h"
 #include <iostream>
 #include <cmath>
 
@@ -42,7 +43,8 @@ static const char* fragmentshaderdist_source ="#version 410 core\n\
         {\n\
             float distfromsphere = 1.0 - length(pos);\n\
             distfromsphere = 30*distfromsphere;\n\
-            color = vec4(distfromsphere, 1.0 - 0.7*distfromsphere, 0.0, 1.0);\n\
+            // color = vec4(0.4+0.4+1.0, 0.2+0.2+0.5, 0.08+0.08+0.2,1.0);\n\
+            color = vec4(distfromsphere, 1.0 - 0.7*distfromsphere, 0.0, 1.0) ;\n\
             //color = vec4(pos, 1.0);\n\
         }\n";
 
@@ -236,7 +238,7 @@ SimpleEnvMap::SimpleEnvMap(int width, int height) : OpenGLDemo(width, height), _
       glDeleteShader(fragmentshader);
       glDeleteShader(vertexshader);
 
-      calculerSphere();
+      calculerMaillage();
       std::cout << _indicesObj.size() << std::endl;
 
       _cameraselector.push_back( []()->Camera*{return new EulerCamera(glm::vec3(0.f, 0.f, 1.f));} );
@@ -265,78 +267,91 @@ SimpleEnvMap::SimpleEnvMap(int width, int height) : OpenGLDemo(width, height), _
 
   }
 
-  void SimpleEnvMap::calculerSphere(){
-    int nbLatitudeLines = 16;
-int nbLongitudeLines = 16;
-int nbVertices = nbLatitudeLines * nbLongitudeLines + 2;
-float radius = 0.1f;
+  void SimpleEnvMap::calculerMaillage(){
+    Meshes meshSphere;
+    meshSphere.initializeVerticesAndIndexes("../src/hello_meshes/triceratops.off");
+    int nbVertices = meshSphere.getNbSommets();
+    std::cout << nbVertices << std::endl;
+    _verticesObj = meshSphere.getVertices();
 
-/* VERTICES AND NORMALS */
-_verticesObj = std::vector<glm::vec3>(nbVertices);
-_normalsObj = std::vector<glm::vec3>(nbVertices);
-//North
-_verticesObj [0] = glm::vec3(0,radius,0);
-_normalsObj[0] = glm::vec3(0,0.1,0);
-//South
-_verticesObj [nbVertices - 1] = glm::vec3(0,-radius,0);
-_normalsObj[nbVertices - 1] = glm::vec3(0,-0.1,0);
+    _normalsObj = std::vector<glm::vec3>(nbVertices);
+    int index = 0;
+    for (glm::vec3 vertex : _verticesObj)
+        _normalsObj[index++] = glm::normalize(vertex);
 
-float latitudeSpacing = 1.0f / (nbLatitudeLines + 1.0f);
-float longitudeSpacing = 1.0f / nbLongitudeLines;
-
-int index = 1;
-for(int latitude = 0; latitude < nbLatitudeLines; ++latitude) {
-    for(int longitude = 0; longitude < nbLongitudeLines; ++longitude) {
-
-        float phi = longitude * longitudeSpacing * 2.0f * glm::pi<float>();
-        float theta = ((latitude + 1) * latitudeSpacing) * glm::pi<float>();
-
-        float x = sin(theta)*sin(phi);
-        float y = cos(theta);
-        float z = sin(theta)*cos(phi);
-
-        _normalsObj[index] = glm::vec3(x, y, z);
-        _verticesObj [index++] = glm::vec3(x, y, z) * radius;
-    }
-}
-
-int nbTriangles = 2*nbLongitudeLines*nbLatitudeLines;
-_indicesObj = std::vector<GLuint>(3*nbTriangles);
-index = 0;
-
-/* TRIANGLES */
-// North and South
-for (int longitude = 0; longitude < nbLongitudeLines; ++longitude) {
-    int tmp = (longitude + 1) % nbLongitudeLines + 1;
-    _indicesObj[index++] = 0;
-    _indicesObj[index++] = longitude + 1;
-    _indicesObj[index++] = tmp;
-
-    _indicesObj[index++] = nbVertices - 1;
-    _indicesObj[index++] = nbVertices - longitude - 2;
-    _indicesObj[index++] = nbVertices - tmp - 1;
-}
-// Others
-for (int latitude = 0; latitude < nbLatitudeLines - 1; ++latitude){
-    for (int longitude = 0; longitude < nbLongitudeLines - 1; ++longitude){
-        int current = latitude*nbLongitudeLines + longitude + 1;
-        _indicesObj[index++] = current;
-        _indicesObj[index++] = current + nbLongitudeLines;
-        _indicesObj[index++] = current + nbLongitudeLines + 1;
-
-        _indicesObj[index++] = current;
-        _indicesObj[index++] = current + nbLongitudeLines + 1;
-        _indicesObj[index++] = current + 1;
-    }
-    int current = latitude*nbLongitudeLines + nbLongitudeLines;
-    _indicesObj[index++] = current;
-    _indicesObj[index++] = current + nbLongitudeLines;
-    _indicesObj[index++] = current + 1;
-
-    _indicesObj[index++] = current;
-    _indicesObj[index++] = current + 1;
-    _indicesObj[index++] = latitude*nbLongitudeLines + 1;
-}
+    // std::cout << _vertices.size() << std::endl;
+    _indicesObj = meshSphere.getIndices();
+//     int nbLatitudeLines = 16;
+// int nbLongitudeLines = 16;
+// int nbVertices = nbLatitudeLines * nbLongitudeLines + 2;
+// float radius = 0.1f;
+//
+// /* VERTICES AND NORMALS */
+// _verticesObj = std::vector<glm::vec3>(nbVertices);
+// _normalsObj = std::vector<glm::vec3>(nbVertices);
+// //North
+// _verticesObj [0] = glm::vec3(0,radius,0);
+// _normalsObj[0] = glm::vec3(0,0.1,0);
+// //South
+// _verticesObj [nbVertices - 1] = glm::vec3(0,-radius,0);
+// _normalsObj[nbVertices - 1] = glm::vec3(0,-0.1,0);
+//
+// float latitudeSpacing = 1.0f / (nbLatitudeLines + 1.0f);
+// float longitudeSpacing = 1.0f / nbLongitudeLines;
+//
+// int index = 1;
+// for(int latitude = 0; latitude < nbLatitudeLines; ++latitude) {
+//     for(int longitude = 0; longitude < nbLongitudeLines; ++longitude) {
+//
+//         float phi = longitude * longitudeSpacing * 2.0f * glm::pi<float>();
+//         float theta = ((latitude + 1) * latitudeSpacing) * glm::pi<float>();
+//
+//         float x = sin(theta)*sin(phi);
+//         float y = cos(theta);
+//         float z = sin(theta)*cos(phi);
+//
+//         _normalsObj[index] = glm::vec3(x, y, z);
+//         _verticesObj [index++] = glm::vec3(x, y, z) * radius;
+//     }
+// }
+//
+// int nbTriangles = 2*nbLongitudeLines*nbLatitudeLines;
+// _indicesObj = std::vector<GLuint>(3*nbTriangles);
+// index = 0;
+//
+// /* TRIANGLES */
+// // North and South
+// for (int longitude = 0; longitude < nbLongitudeLines; ++longitude) {
+//     int tmp = (longitude + 1) % nbLongitudeLines + 1;
+//     _indicesObj[index++] = 0;
+//     _indicesObj[index++] = longitude + 1;
+//     _indicesObj[index++] = tmp;
+//
+//     _indicesObj[index++] = nbVertices - 1;
+//     _indicesObj[index++] = nbVertices - longitude - 2;
+//     _indicesObj[index++] = nbVertices - tmp - 1;
+// }
+// // Others
+// for (int latitude = 0; latitude < nbLatitudeLines - 1; ++latitude){
+//     for (int longitude = 0; longitude < nbLongitudeLines - 1; ++longitude){
+//         int current = latitude*nbLongitudeLines + longitude + 1;
+//         _indicesObj[index++] = current;
+//         _indicesObj[index++] = current + nbLongitudeLines;
+//         _indicesObj[index++] = current + nbLongitudeLines + 1;
+//
+//         _indicesObj[index++] = current;
+//         _indicesObj[index++] = current + nbLongitudeLines + 1;
+//         _indicesObj[index++] = current + 1;
+//     }
+//     int current = latitude*nbLongitudeLines + nbLongitudeLines;
+//     _indicesObj[index++] = current;
+//     _indicesObj[index++] = current + nbLongitudeLines;
+//     _indicesObj[index++] = current + 1;
+//
+//     _indicesObj[index++] = current;
+//     _indicesObj[index++] = current + 1;
+//     _indicesObj[index++] = latitude*nbLongitudeLines + 1;
+// }
 
     // Initialize the geometry
     // 1. Generate geometry buffers

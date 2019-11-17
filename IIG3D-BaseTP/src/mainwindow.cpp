@@ -65,5 +65,5 @@ void MainWindow::on_actionHello_envmap_triggered() {
 }
 
 void MainWindow::on_actionHello_subdivision_triggered() {
-    openglWidget->activatedemo(5);
+    openglWidget->activatedemo(6);
 }

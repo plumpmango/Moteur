@@ -1,4 +1,5 @@
 #include "hellosubdivision.h"
+
 #include <iostream>
 #include <cmath>
 
@@ -56,51 +57,22 @@ static const char* fragmentshader_source ="#version 410 core\n\
 
 Subdivision::Subdivision(int width, int height) : OpenGLDemo(width, height), _activecamera(0), _camera(nullptr) {
 
-    int nbVertices = 12;
+    Meshes meshSphere;
+    meshSphere.initializeVerticesAndIndexes("../src/hello_meshes/sphere.off");
+    int nbVertices = meshSphere.getNbSommets();
+    std::cout << nbVertices << std::endl;
+    _vertices = meshSphere.getVertices();
 
-    /* VERTICES & NORMALS*/
     _normals = std::vector<glm::vec3>(nbVertices);
-    float t = .850650808352039932f;
-    float q = .525731112119133606f;
-
-    _vertices = {
-        {-q, 0, t}, {q, 0, t}, {-q, 0, -t}, {q, 0, -t},
-        {0, t, q}, {0, t, -q}, {0, -t, q}, {0, -t, -q},
-        {t, q, 0}, {-t, q, 0}, {t, -q, 0}, {-t, -q, 0}
-    };
-
     int index = 0;
     for (glm::vec3 vertex : _vertices)
         _normals[index++] = glm::normalize(vertex);
 
-    /* TRIANGLES */
-    _indices = {
-        0, 4, 1,
-        0, 9, 4,
-        9, 5, 4,
-        4, 5, 8,
-        4, 8, 1,
+    // std::cout << _vertices.size() << std::endl;
+    _indices = meshSphere.getIndices();
+    // std::cout << _indices.size() << std::endl;
 
-        8, 10, 1,
-        8, 3, 10,
-        5, 3, 8,
-        5, 2, 3,
-        2, 7, 3,
-
-        7, 10, 3,
-        7, 6, 10,
-        7, 11, 6,
-        11, 0, 6,
-        0, 1, 6,
-
-        6, 1, 10,
-        9, 0, 11,
-        9, 11, 2,
-        9, 2, 5,
-        7, 2, 11
-    };
-
-    for (int i = 0; i < 2; ++i)
+    for (int i = 0; i < 4; ++i)
         subdivide();
 
     // light

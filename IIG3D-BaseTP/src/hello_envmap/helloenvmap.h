@@ -5,6 +5,7 @@
 
 #include "../hello_camera/camera.h"
 
+
 #include <memory>
 #include <functional>
 
@@ -16,7 +17,7 @@ public:
     unsigned int loadCubemap(std::vector<std::string> faces);
     void resize(int width, int height) override;
     void draw() override;
-    void calculerSphere();
+    void calculerMaillage();
     void mouseclick(int button, float xpos, float ypos) override;
     void mousemove(float xpos, float ypos) override;
     void keyboardmove(int key, double time) override;

@@ -3,6 +3,7 @@
 
 #include "opengldemo.h"
 #include "../hello_camera/camera.h"
+#include "../hello_meshes/meshes.h"
 
 #include <memory>
 #include <functional>

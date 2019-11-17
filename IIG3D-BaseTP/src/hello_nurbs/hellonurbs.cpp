@@ -44,8 +44,8 @@ SimpleNurbs::SimpleNurbs(int width, int height) : OpenGLDemo(width, height), _ac
     _ptsControle = ptsControle;
 
     std::vector<float> w {
-        1, 1, 1,
-        1, 1, 1
+        1, 3, 5,
+        3, 1, 1
     };
 
     _w = w;
@@ -403,14 +403,14 @@ bool SimpleNurbs::keyboard(unsigned char k) {
           destroy = true;
           return true;
         case 't':
-          _w[2] += 100;
+          _w[2] += 10;
           // std::cout << _w[2] << std::endl;
           computeGeom();
           return true;
-        // case 'b' :
-        //   if(_w[2] > 0)
-        //     _w[2] --;
-        //   return true;
+        case 'b' :
+          if(_w[2] > 10)
+            _w[2] -= 10;
+          return true;
         default:
             return false;
     }
