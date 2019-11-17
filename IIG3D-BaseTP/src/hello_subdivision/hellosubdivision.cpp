@@ -72,7 +72,7 @@ Subdivision::Subdivision(int width, int height) : OpenGLDemo(width, height), _ac
     _indices = meshSphere.getIndices();
     // std::cout << _indices.size() << std::endl;
 
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 1; ++i)
         subdivide();
 
     // light

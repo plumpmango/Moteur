@@ -408,8 +408,10 @@ bool SimpleNurbs::keyboard(unsigned char k) {
           computeGeom();
           return true;
         case 'b' :
-          if(_w[2] > 10)
+          if(_w[2] > 10){
             _w[2] -= 10;
+            computeGeom();
+          }
           return true;
         default:
             return false;
